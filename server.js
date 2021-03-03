@@ -31,11 +31,12 @@ app.get("/api/notes", (req, res)=>{
     });
 });
 
-
+var idi = 0;
 app.post("/api/notes", (req, res)=>{
     var data = {
 title: req.body.title,
 text: req.body.text,
+id: idi++,
     }
     
     database.push(data);
@@ -49,6 +50,25 @@ text: req.body.text,
         res.json(data);
     })
     
+});
+
+
+app.delete("/api/notes/:id", (req, res)=>{
+    var id = req.params.id;
+    var array = [];
+    for(var i = 0; i<database.length; i++){
+        if(i!=id){
+            array.push(database[i])
+        }
+    }
+    fs.writeFile("./db/db.json", JSON.stringify (array), function(error){
+        if(error){
+            res.writeHead(500);
+            res.end();
+            return;
+        }
+        res.send(true);
+    })
 })
 
 
